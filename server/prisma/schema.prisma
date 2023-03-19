@@ -1,0 +1,59 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Schema
+model User {
+  userId   Int       @id @default(autoincrement())
+  name     String
+  email    String    @unique
+  address  String
+  phone    BigInt
+  password String
+  products Product[] @relation("ProductPosts")
+  // boughtProducts BoughtProducts
+}
+
+model Product {
+  productd   Int        @id @default(autoincrement())
+  title      String
+  categories Category[] // one Product can have multiple different categories
+  user       User       @relation("ProductPosts", fields: [userId], references: [userId])
+  userId     Int
+  price      Int
+  rent       Int
+  rentTime   RentTime
+  createdAt  DateTime   @default(now())
+  // BoughtProducts BoughtProducts @relation(fields: [], references: [])
+}
+
+model Category {
+  categoryId   Int          @id @default(autoincrement())
+  products     Product[] // one category can have multiple different products
+  categoryName CategoryType
+}
+
+enum RentTime {
+  daily
+  monthly
+  hourly
+  weekly
+  yearly
+}
+
+enum CategoryType {
+  ELECTRONICS
+  FURNITURE
+  HOMEAPPLIANCES
+  SPORTINGGOODS
+  OUTDOOR
+  TOYS
+}
